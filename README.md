@@ -38,22 +38,22 @@ Products are monitored continuously against an immutable `alert_level` configura
 ### 🛒 1. Advanced Order Creation
 The order creation dashboard allows managers to build dynamic multi-item lists using continuous reactive data syncing to fetch unit prices instantly.
 
-![Order Form](screenshots/1-order-form.png)
+![Order Form](screenshots/order-form.png)
 
 ### ⚠️ 2. Real-Time Stock Validation
 The core safeguard in action: blocking managers from finalizing orders when requested quantities exceed current available balances.
 
-![Stock Validation Error](screenshots/2-stock-validation.png)
+![Stock Validation Error](screenshots/stock-validation.png)
 
 ### 📦 3. Live Smart Inventory Dashboard
 An interactive product list that aggregates calculated virtual balances on-the-fly, gracefully rendering dynamic state flags when thresholds are reached.
 
-![Product Catalog Table](screenshots/3-product-catalog.png)
+![Product Catalog Table](screenshots/product-catalog.png)
 
 ### 📋 4. Polymorphic Stock Movements / Ledger
 A comprehensive audit trail displaying incoming and outgoing shipments, seamlessly indicating types and system-generated references.
 
-![Inventory Movements](screenshots/4-inventory-movements.png)
+![Inventory Movements](screenshots/inventory-movements.png)
 
 ---
 
@@ -61,5 +61,5 @@ A comprehensive audit trail displaying incoming and outgoing shipments, seamless
 
 1. **Clone the repository:**
    ```bash
-   git clone [https://github.com/yourusername/stockflow.git](https://github.com/yourusername/stockflow.git)
+   git clone git@github.com:hussein-code-lab/StockFlow.git
    cd stockflow
