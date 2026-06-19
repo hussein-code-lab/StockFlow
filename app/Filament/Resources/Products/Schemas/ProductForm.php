@@ -26,6 +26,11 @@ class ProductForm
                         ->required()
                         ->numeric()
                         ->prefix('$'),
+                    TextInput::make('initial_stock')
+                        ->numeric()
+                        ->minValue(0)
+                        ->default(0)
+                        ->visibleOn('create'),
                     Textarea::make('description')
                         ->columnSpanFull(),
                     TextInput::make('alert_level')

@@ -2,11 +2,14 @@
 
 namespace App\Filament\Resources\Orders\Schemas;
 
+use App\Models\InventoryMovement;
 use App\Models\Product;
+use Closure;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 
 class OrderForm
@@ -49,7 +52,24 @@ class OrderForm
                                     ->numeric()
                                     ->minValue(1)
                                     ->default(1)
-                                    ->required(),
+                                    ->required()
+                                    ->rules([
+                                        static function (Get $get) {
+                                            return static function (string $attribute, $value, Closure $fail) use ($get) {
+                                                $productId = $get('product_id');
+
+                                                if (! $productId) {
+                                                    return;
+                                                }
+
+                                                $currentStock = InventoryMovement::where('product_id', $productId)->sum('quantity');
+
+                                                if ($value > $currentStock) {
+                                                    $fail("عذراً، الكمية المتاحة في المستودع حالياً هي ({$currentStock}) قطع فقط.");
+                                                }
+                                            };
+                                        },
+                                    ]),
 
                                 TextInput::make('price')
                                     ->numeric()

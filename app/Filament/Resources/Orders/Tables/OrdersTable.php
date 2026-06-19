@@ -7,6 +7,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
 class OrdersTable
@@ -16,14 +17,26 @@ class OrdersTable
         return $table
             ->columns([
                 TextColumn::make('order_number')
-                    ->searchable(),
+                    ->searchable()
+                    ->sortable()
+                    ->copyable(),
                 TextColumn::make('customer_name')
                     ->searchable(),
                 TextColumn::make('status')
-                    ->searchable(),
+                    ->badge()
+                    ->color(fn(string $state): string => match ($state)
+                    {
+                        'pending' => 'gray',
+                        'processing' => 'info',
+                        'completed' => 'success',
+                        'cancelled' => 'danger',
+                        default => 'gray',
+                    }),
                 TextColumn::make('total_amount')
-                    ->numeric()
+                    ->money()
                     ->sortable(),
+                TextColumn::make('items_count')
+                    ->counts('items'),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -34,7 +47,13 @@ class OrdersTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                SelectFilter::make('status')
+                    ->options([
+                        'pending' => 'Pending',
+                        'processing' => 'Processing',
+                        'completed' => 'Completed',
+                        'cancelled' => 'Cancelled',
+                    ])
             ])
             ->recordActions([
                 ViewAction::make(),
