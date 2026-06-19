@@ -1,58 +1,65 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# StockFlow - Enterprise Event-Driven Inventory Management System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+**StockFlow** is a high-performance, robust Inventory and Order Management System designed with an **Event-Driven Architecture** to handle high-concurrency and ensure maximum data integrity. Built using the modern PHP ecosystem, it optimizes server resources by offloading heavy inventory calculations and logging into asynchronous background queues.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🚀 Key Architectural Features
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### 1. Event-Driven Inventory Ledger
+Instead of tightly coupling order creation with database stock changes, StockFlow dispatches an asynchronous `OrderCreated` event. A dedicated background Queue Listener (`ProcessStockDeduction`) processes the payload safely inside a strict database transaction, changing the status and computing prices asynchronously.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 2. Polymorphic Audit Trail
+Every single physical change in the warehouse is securely recorded in a unified `inventory_movements` ledger using **Polymorphic Relations**. 
+* **Stock Inbound (Suppliers/Adjustments):** Automatically referenced back to the `Product` model.
+* **Stock Outbound (Sales/Customer Orders):** Directly linked to the specific `Order` model, creating a bulletproof, unalterable history trail.
 
-## Learning Laravel
+### 3. Strict Real-Time Multi-Stage Validation
+To strictly prevent negative stock balances (selling items not physically available), the system executes real-time aggregate checking (`sum('quantity')`) right inside the Filament form interaction, providing an elegant UX with precise error messages before database persistence.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### 4. Dynamic Visual Alert Levels (Reorder Points)
+Products are monitored continuously against an immutable `alert_level` configuration. Once the live virtual stock dips below the threshold, the dashboard instantly flags the item with dynamic visual warnings to alert purchasing managers.
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+## 🛠️ Tech Stack & Ecosystem
 
-## Agentic Development
+* **Backend Framework:** Laravel 12 (PHP 8.2+)
+* **Admin Portal & UI:** Filament PHP v5 (Advanced Tabled Forms, Badge Columns & Custom Page Mutators)
+* **Reactive Core:** Livewire 4
+* **Database:** MySQL 8 (Indexed Morph fields & Foreign Constraints)
+* **Queue Driver:** Database/Redis
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+---
 
-```bash
-composer require laravel/boost --dev
+## 📸 Core Modules Preview
+*(Screenshots representing the Enterprise UX of StockFlow)*
 
-php artisan boost:install
-```
+### 🛒 1. Advanced Order Creation
+The order creation dashboard allows managers to build dynamic multi-item lists using continuous reactive data syncing to fetch unit prices instantly.
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+![Order Form](screenshots/1-order-form.png)
 
-## Contributing
+### ⚠️ 2. Real-Time Stock Validation
+The core safeguard in action: blocking managers from finalizing orders when requested quantities exceed current available balances.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+![Stock Validation Error](screenshots/2-stock-validation.png)
 
-## Code of Conduct
+### 📦 3. Live Smart Inventory Dashboard
+An interactive product list that aggregates calculated virtual balances on-the-fly, gracefully rendering dynamic state flags when thresholds are reached.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+![Product Catalog Table](screenshots/3-product-catalog.png)
 
-## Security Vulnerabilities
+### 📋 4. Polymorphic Stock Movements / Ledger
+A comprehensive audit trail displaying incoming and outgoing shipments, seamlessly indicating types and system-generated references.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+![Inventory Movements](screenshots/4-inventory-movements.png)
 
-## License
+---
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## ⚙️ Installation & Quick Start
+
+1. **Clone the repository:**
+   ```bash
+   git clone [https://github.com/yourusername/stockflow.git](https://github.com/yourusername/stockflow.git)
+   cd stockflow
