@@ -23,6 +23,13 @@ class ProductsTable
                 TextColumn::make('price')
                     ->money()
                     ->sortable(),
+                TextColumn::make('current_stock')
+                    ->getStateUsing(function ($record) {
+                        return $record->inventoryMovements()->sum('quantity') ?? 0;
+                    })
+                    ->numeric()
+                    ->color(fn ($record, $state) => $state <= $record->alert_level ? 'danger' : 'success')
+                    ->icon(fn ($record, $state) => $state <= $record->alert_level ? 'heroicon-m-exclamation-triangle' : null),
                 TextColumn::make('alert_level')
                     ->numeric()
                     ->sortable(),
